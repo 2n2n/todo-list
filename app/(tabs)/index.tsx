@@ -5,14 +5,7 @@ import { useState } from 'react';
 import { View, Text, TextInput, Button, ScrollView } from 'react-native';
 import uuid from 'react-native-uuid';
 export default function HomeScreen() {
-
-  const [tasks, setTasks] = useState<any>([
-    {
-      id: uuid.v4(),
-      value: "todo",
-      status: "pending",
-    }
-  ]);
+  const [tasks, setTasks] = useState<any>([]);
   const [taskInput, setTaskInput] = useState<string>('');
 
   const onAddTaskHandler = () => {
@@ -39,9 +32,10 @@ export default function HomeScreen() {
       <TextInput 
         value={taskInput}
         style={{ borderWidth: 1, borderColor: 'black' }} 
-        onChangeText={(text) => setTaskInput(text)}
+        onChangeText={(text) => {
+          setTaskInput(text)
+        }}
       />
-
       <Button title="Add task" onPress={onAddTaskHandler}/>
       <Button title="Clear" onPress={onClear}/>
       <ScrollView>
