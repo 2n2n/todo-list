@@ -1,11 +1,13 @@
 import App from '@/components/App';
 import CheckBoxItem from '@/components/CheckBoxItem';
 import Profile from '@/components/Profile';
-import { useState } from 'react';
+import TodoContext from '@/context/todo.context';
+import { useContext, useState } from 'react';
 import { View, Text, TextInput, Button, ScrollView } from 'react-native';
 import uuid from 'react-native-uuid';
-export default function HomeScreen() {
-  const [tasks, setTasks] = useState<any>([]);
+export default function TodoList() {
+  
+  const { tasks, setTasks } = useContext(TodoContext);
   const [taskInput, setTaskInput] = useState<string>('');
 
   const onAddTaskHandler = () => {
@@ -23,7 +25,12 @@ export default function HomeScreen() {
   }
 
   const onCheck = (taskId) => {
-    const filteredList = tasks.filter((_data) => _data.id !== taskId)
+    const filteredList = tasks.map((_data) => {
+      if(_data.id === taskId) {
+        _data.status = 'completed';
+      }
+      return _data;
+    })
     setTasks(filteredList);
   }
 
@@ -39,7 +46,9 @@ export default function HomeScreen() {
       <Button title="Add task" onPress={onAddTaskHandler}/>
       <Button title="Clear" onPress={onClear}/>
       <ScrollView>
-        { tasks.map((task) => {
+        { tasks
+          .filter((_task) => _task.status === 'pending')
+          .map((task) => {
           return <CheckBoxItem key={task.id} task={task} onCheck={() => onCheck(task.id)}/>
         })}
       </ScrollView>
