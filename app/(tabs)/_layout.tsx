@@ -1,14 +1,29 @@
 import { Tabs } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import TodoContext from '@/context/todo.context';
+import { getAll } from '@/requests/todo.request';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const [tasks, setTasks] = useState<any[]>([]);
+
+  useEffect(() => {
+    getAll()
+    .then((results) => {
+      const mappedData = results.map((_result) => {
+        return {
+          id: _result.id,
+          status: _result.status,
+          value: _result.task
+        }
+      })
+      setTasks(mappedData)
+    })
+  }, [])
 
   return (
     <TodoContext.Provider value={{
