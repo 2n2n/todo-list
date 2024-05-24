@@ -2,18 +2,18 @@ import CheckBoxItem from '@/components/CheckBoxItem';
 import TodoContext from '@/context/todo.context';
 import { useContext } from 'react';
 import { ScrollView, Text, View } from 'react-native';
+import { updateTodo } from "@/requests/todo.request";
+
 
 export default function CompletedList() {
-  const { tasks, setTasks } = useContext(TodoContext)
+  const { tasks, refetchTaskLists } = useContext(TodoContext);
 
-  const onUnCheck = (taskId) => {
-    const filteredList = tasks.map((_data) => {
-      if(_data.id === taskId) {
-        _data.status = 'pending';
-      }
-      return _data;
-    })
-    setTasks(filteredList);
+
+  const onUnCheck = async (taskId) => {
+    await updateTodo(taskId, {
+      status: 'pending'
+    });
+    await refetchTaskLists();
   };
 
   return (

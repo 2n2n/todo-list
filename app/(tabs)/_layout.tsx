@@ -11,7 +11,7 @@ export default function TabLayout() {
   const colorScheme = useColorScheme();
   const [tasks, setTasks] = useState<any[]>([]);
 
-  useEffect(() => {
+  const refetchTaskLists = () => {
     getAll()
     .then((results) => {
       const mappedData = results.map((_result) => {
@@ -23,12 +23,17 @@ export default function TabLayout() {
       })
       setTasks(mappedData)
     })
+  }
+
+  useEffect(() => {
+    refetchTaskLists()
   }, [])
 
   return (
     <TodoContext.Provider value={{
       tasks,
       setTasks,
+      refetchTaskLists
     }}>
     <Tabs
       screenOptions={{
