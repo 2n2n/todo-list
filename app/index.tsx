@@ -1,19 +1,75 @@
-import { View, Text, Button } from 'react-native';
-import { router, Link } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { CameraView, useCameraPermissions } from 'expo-camera';
+import { useState } from 'react';
+import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+
 const Home = () => {
+    const [facing, setFacing] = useState('back');
+    const [permission, requestPermission] = useCameraPermissions();
+    
+    if (!permission) {
+        // Camera permissions are still loading.
+        return <View />;
+    }
+    
+    if (!permission.granted) {
+        // Camera permissions are not granted yet.
+        return (
+        <View style={styles.container}>
+            <Text style={{ textAlign: 'center' }}>We need your permission to show the camera</Text>
+            <Button onPress={requestPermission} title="grant permission" />
+        </View>
+        );
+    }
+    
+    function toggleCameraFacing() {
+        setFacing(current => (current === 'back' ? 'front' : 'back'));
+    }
+    
     return (
-        <SafeAreaView>
-            <Link href={"/"}>Home</Link>
-            {/* <Button title="Home" onPress={() => router.push('/')}/> */}
-            <Button title="About" onPress={() => router.push('(about)')}/>
-            {/* <Link href={"/(about)"}>About</Link> */}
-             <View>
-                <Text>Hello World!</Text>
+        <View style={styles.container}>
+        <CameraView 
+            barcodeScannerSettings={{
+                barcodeTypes: ["qr"],
+            }}
+            onBarcodeScanned={(scanningResult) => {
+                console.log(scanningResult.data)
+            }}
+            style={styles.camera} 
+            facing={facing}>
+            <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
+                <Text style={styles.text}>Flip Camera</Text>
+            </TouchableOpacity>
             </View>
-        </SafeAreaView>
-       
-    )
+        </CameraView>
+        </View>
+    );
 }
+
+const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+    },
+    camera: {
+      flex: 1,
+    },
+    buttonContainer: {
+      flex: 1,
+      flexDirection: 'row',
+      backgroundColor: 'transparent',
+      margin: 64,
+    },
+    button: {
+      flex: 1,
+      alignSelf: 'flex-end',
+      alignItems: 'center',
+    },
+    text: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      color: 'white',
+    },
+  });
 
 export default Home;
