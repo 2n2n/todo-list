@@ -14,14 +14,13 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anthony-pivotculinary.todo-list"
+      "bundleIdentifier": "com.anthony.acumen.todo-list"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      },
-      "package": "acumen.todolist"
+      }
     },
     "web": {
       "bundler": "metro",
